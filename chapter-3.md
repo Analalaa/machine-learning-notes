@@ -58,32 +58,40 @@ $$
 给定数据集 $\{(\mathbf{x}_i, y_i)\}_{i=1}^m$，其中 $y_i \in \{0, 1\}$，则逻辑回归模型的预测概率为：
 
 $$
-p(y = 1 | \mathbf{x}) = \frac{1}{1 + e^{-(\mathbf{w}^T \mathbf{x} + b)}} = \sigma(\mathbf{w}^T \mathbf{x} + b)
+p(y = 1 \mid \mathbf{x}) = \frac{1}{1 + e^{-(\mathbf{w}^T \mathbf{x} + b)}} = \sigma(\mathbf{w}^T \mathbf{x} + b)
 $$
 
-其中 $\sigma(z)$ 是 sigmoid 函数。
+其中 $\sigma(z)$ 是 sigmoid 函数：
+
+$$
+\sigma(z) = \frac{1}{1 + e^{-z}}
+$$
+
+---
 
 定义对数似然函数为：
 
 $$
-\ell(\mathbf{w}, b) = \sum_{i=1}^m \ln p(y_i | \mathbf{x}_i; \mathbf{w}, b) \tag{1}
+\ell(\mathbf{w}, b) = \sum_{i=1}^m \ln p(y_i \mid \mathbf{x}_i; \mathbf{w}, b) \tag{1}
 $$
 
 对每个样本 $(\mathbf{x}_i, y_i)$，有：
 
 $$
-p(y_i | \mathbf{x}_i; \mathbf{w}, b) = \sigma(\mathbf{w}^T \mathbf{x}_i + b)^{y_i} (1 - \sigma(\mathbf{w}^T \mathbf{x}_i + b))^{1 - y_i}
+p(y_i \mid \mathbf{x}_i; \mathbf{w}, b) = \sigma(\mathbf{w}^T \mathbf{x}_i + b)^{y_i} \cdot \left(1 - \sigma(\mathbf{w}^T \mathbf{x}_i + b)\right)^{1 - y_i}
 $$
 
 因此对数似然函数可以写为：
 
 $$
-\ell(\mathbf{w}, b) = \sum_{i=1}^m \left[ y_i \ln \sigma(\mathbf{w}^T \mathbf{x}_i + b) + (1 - y_i) \ln (1 - \sigma(\mathbf{w}^T \mathbf{x}_i + b)) \right] \tag{2}
+\ell(\mathbf{w}, b) = \sum_{i=1}^m \left[ y_i \ln \sigma(\mathbf{w}^T \mathbf{x}_i + b) + (1 - y_i) \ln \left(1 - \sigma(\mathbf{w}^T \mathbf{x}_i + b)\right) \right] \tag{2}
 $$
+
+---
 
 ### 🧮 梯度下降法优化
 
-我们通常最大化对数似然函数，或者最小化其负数（即负对数似然，作为损失函数）：
+我们通常最大化对数似然函数，或者等价地**最小化其负数（负对数似然，作为损失函数）**：
 
 $$
 \mathcal{L}(\mathbf{w}, b) = - \ell(\mathbf{w}, b) \tag{3}
@@ -91,19 +99,21 @@ $$
 
 对参数求导，可以得到梯度下降的更新公式：
 
-- 对 $\mathbf{w}$ 的梯度：
+- 对 $\mathbf{w}$ 的梯度为：
 
 $$
 \nabla_{\mathbf{w}} \mathcal{L} = \sum_{i=1}^m \left[ \sigma(\mathbf{w}^T \mathbf{x}_i + b) - y_i \right] \mathbf{x}_i \tag{4}
 $$
 
-- 对 $b$ 的梯度：
+- 对 $b$ 的梯度为：
 
 $$
 \frac{\partial \mathcal{L}}{\partial b} = \sum_{i=1}^m \left[ \sigma(\mathbf{w}^T \mathbf{x}_i + b) - y_i \right] \tag{5}
 $$
 
-使用梯度下降更新参数：
+---
+
+使用梯度下降更新参数（伪代码）：
 
 ```python
 w -= learning_rate * grad_w
