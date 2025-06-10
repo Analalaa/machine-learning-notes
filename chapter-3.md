@@ -72,7 +72,7 @@ $$
 定义对数似然函数为：
 
 $$
-\ell(\mathbf{w}, b) = \sum_{i=1}^m \ln p(y_i \mid \mathbf{x}_i; \mathbf{w}, b) \tag{1}
+\ell(\mathbf{w}, b) = \sum_{i=1}^m \ln p(y_i \mid \mathbf{x}_i; \mathbf{w}, b) \
 $$
 
 对每个样本 $(\mathbf{x}_i, y_i)$，有：
@@ -84,7 +84,7 @@ $$
 因此对数似然函数可以写为：
 
 $$
-\ell(\mathbf{w}, b) = \sum_{i=1}^m \left[ y_i \ln \sigma(\mathbf{w}^T \mathbf{x}_i + b) + (1 - y_i) \ln \left(1 - \sigma(\mathbf{w}^T \mathbf{x}_i + b)\right) \right] \tag{2}
+\ell(\mathbf{w}, b) = \sum_{i=1}^m \left[ y_i \ln \sigma(\mathbf{w}^T \mathbf{x}_i + b) + (1 - y_i) \ln \left(1 - \sigma(\mathbf{w}^T \mathbf{x}_i + b)\right) \right] \
 $$
 
 ---
@@ -94,21 +94,25 @@ $$
 我们通常最大化对数似然函数，或者等价地**最小化其负数（负对数似然，作为损失函数）**：
 
 $$
-\mathcal{L}(\mathbf{w}, b) = - \ell(\mathbf{w}, b) \tag{3}
+\mathcal{L}(\mathbf{w}, b) = - \ell(\mathbf{w}, b) \
 $$
+
+这个就是逻辑回归的标准损失函数。可以直观理解为：
+* 当预测概率和真实标签差距越大，损失越大
+* 当模型自信但错了，惩罚尤其大（因为 $\ln(0)$ 趋近于 $-\infty$）
 
 对参数求导，可以得到梯度下降的更新公式：
 
 - 对 $\mathbf{w}$ 的梯度为：
 
 $$
-\nabla_{\mathbf{w}} \mathcal{L} = \sum_{i=1}^m \left[ \sigma(\mathbf{w}^T \mathbf{x}_i + b) - y_i \right] \mathbf{x}_i \tag{4}
+\nabla_{\mathbf{w}} \mathcal{L} = \sum_{i=1}^m \left[ \sigma(\mathbf{w}^T \mathbf{x}_i + b) - y_i \right] \mathbf{x}_i \
 $$
 
 - 对 $b$ 的梯度为：
 
 $$
-\frac{\partial \mathcal{L}}{\partial b} = \sum_{i=1}^m \left[ \sigma(\mathbf{w}^T \mathbf{x}_i + b) - y_i \right] \tag{5}
+\frac{\partial \mathcal{L}}{\partial b} = \sum_{i=1}^m \left[ \sigma(\mathbf{w}^T \mathbf{x}_i + b) - y_i \right] \
 $$
 
 ---
@@ -118,3 +122,15 @@ $$
 ```python
 w -= learning_rate * grad_w
 b -= learning_rate * grad_b
+
+### 线形判别分析(Linear Discriminant Analysis, LDA)
+给定训练样例集，设法将样例投影到一条直线上，同类样例投影点尽可能接近、异类样例投影点尽可能远离 \
+给定数据集以及实例的集合、均值向量、协方差矩阵。若集那个数据投影到直线w上，可以表示出投影点的距离与协方差 \
+使得同类样例的投影点协方差尽可能小，异类样例的投影点尽可能远离，考虑两者，可以获得最大化目标：J
+定义类内散度矩阵；定义类间散度矩阵，重写J，LDA最大化的目标也就是类内散度矩阵和类间散度矩阵的“广义瑞利商”
+
+### 多分类学习
+经典拆分策略
+* OvO 一对一 N个类别两两配对 产生 $ N(n-1)/2$个分类结果，最终结果通过投票产生
+* OvR 每次将一个类的样例作为正例，其余类作为反例训练 N个分类器
+* MvM 常用的MvM技术“纠错输出码”（Error Correcting Output Codes, ECOC）
